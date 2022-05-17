@@ -1064,7 +1064,6 @@ namespace Microsoft.Data.Common
         internal const string CurrentLanguage = "";
         internal const string DataSource = "";
         internal const SqlConnectionEncryptionOption Encrypt = SqlConnectionEncryptionOption.Mandatory;
-        internal const bool IsTDS8 = false;
         internal const string HostNameInCertificate = "";
         internal const bool Enlist = true;
         internal const string FailoverPartner = "";
@@ -1128,7 +1127,6 @@ namespace Microsoft.Data.Common
         internal const string ContextConnection = "Context Connection";
         internal const string CurrentLanguage = "Current Language";
         internal const string Encrypt = "Encrypt";
-        internal const string IsTDS8 = "IsTDS8";
         internal const string HostNameInCertificate = "Host Name In Certificate";
         internal const string FailoverPartner = "Failover Partner";
         internal const string InitialCatalog = "Initial Catalog";
@@ -1184,6 +1182,9 @@ namespace Microsoft.Data.Common
         //internal const string AttachDBFilename       = EXTENDEDPROPERTIES+","+INITIALFILENAME;
         internal const string EXTENDEDPROPERTIES = "extended properties";
         internal const string INITIALFILENAME = "initial file name";
+
+        // internal const string HostNameInCertificate        = HOSTNAMEINCERTIFICATE;
+        internal const string HOSTNAMEINCERTIFICATE = "hostnameincertificate";
 
         //internal const string ConnectTimeout         = CONNECTIONTIMEOUT+","+TIMEOUT;
         internal const string CONNECTIONTIMEOUT = "connection timeout";

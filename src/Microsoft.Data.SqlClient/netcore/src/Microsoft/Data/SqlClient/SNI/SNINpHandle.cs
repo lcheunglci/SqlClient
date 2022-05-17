@@ -22,9 +22,8 @@ namespace Microsoft.Data.SqlClient.SNI
         // private const int MAX_PIPE_INSTANCES = 255; // TODO: Investigate pipe instance limit.
 
         private readonly string _targetServer;
-        private readonly string _serverNameIndication;
         private readonly object _sendSync;
-        private readonly bool _isTDS8;
+        private readonly bool _tlsFirst;
         private Stream _stream;
         private NamedPipeClientStream _pipeStream;
         private SslOverTdsStream _sslOverTdsStream;
@@ -38,7 +37,7 @@ namespace Microsoft.Data.SqlClient.SNI
         private int _bufferSize = TdsEnums.DEFAULT_LOGIN_PACKET_SIZE;
         private readonly Guid _connectionId = Guid.NewGuid();
 
-        public SNINpHandle(string serverName, string pipeName, long timerExpire, bool isTDS8, string serverNameIndication)
+        public SNINpHandle(string serverName, string pipeName, long timerExpire, bool tlsFirst)
         {
             using (TrySNIEventScope.Create(nameof(SNINpHandle)))
             {
@@ -46,9 +45,7 @@ namespace Microsoft.Data.SqlClient.SNI
 
                 _sendSync = new object();
                 _targetServer = serverName;
-                _isTDS8 = isTDS8;
-                _serverNameIndication = serverNameIndication;
-
+                _tlsFirst = tlsFirst;
                 try
                 {
                     _pipeStream = new NamedPipeClientStream(
@@ -95,7 +92,7 @@ namespace Microsoft.Data.SqlClient.SNI
 
                 Stream stream = _pipeStream;
 
-                if (!_isTDS8)
+                if (!_tlsFirst)
                 {
                     _sslOverTdsStream = new SslOverTdsStream(_pipeStream, _connectionId);
                     stream = _sslOverTdsStream;
@@ -321,14 +318,16 @@ namespace Microsoft.Data.SqlClient.SNI
                 _validateCert = (options & TdsEnums.SNI_SSL_VALIDATE_CERTIFICATE) != 0;
                 try
                 {
-                    if (_isTDS8)
+                    if (_tlsFirst)
                     {
 #if !NETSTANDARD2_0 
-                        AuthenticateClientAsync(_sslStream, _serverNameIndication, null);
+                        // TODO: Resolve whether to send _serverNameIndication or _targetServer. _serverNameIndication currently results in error. Why?
+                        AuthenticateClientAsync(_sslStream, _targetServer, null).ConfigureAwait(false).GetAwaiter().GetResult();
 #endif
                     }
                     else
                     {
+                        // TODO: Resolve whether to send _serverNameIndication or _targetServer. _serverNameIndication currently results in error. Why?
                         _sslStream.AuthenticateAsClient(_targetServer, null, s_supportedProtocols, false);
                     }
                     if (_sslOverTdsStream is not null)

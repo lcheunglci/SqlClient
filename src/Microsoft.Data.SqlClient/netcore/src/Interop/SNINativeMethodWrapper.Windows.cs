@@ -323,12 +323,12 @@ namespace Microsoft.Data.SqlClient
         {
             return SNIGetInfoWrapper(pConn, QTypes.SNI_QUERY_CONN_CONNID, out connId);
         }
-       
+
         internal static uint SniGetProviderNumber(SNIHandle pConn, ref ProviderEnum provNum)
         {
             return SNIGetInfoWrapper(pConn, QTypes.SNI_QUERY_CONN_PROVIDERNUM, out provNum);
         }
-        
+
         internal static uint SniGetConnectionPort(SNIHandle pConn, ref ushort portNum)
         {
             return SNIGetInfoWrapper(pConn, QTypes.SNI_QUERY_CONN_PEERPORT, out portNum);
@@ -369,9 +369,23 @@ namespace Microsoft.Data.SqlClient
             return SNIOpenWrapper(ref native_consumerInfo, "session:", parent, out pConn, fSync, ipPreference, ref native_cachedDNSInfo);
         }
 
-        internal static unsafe uint SNIOpenSyncEx(ConsumerInfo consumerInfo, string constring, ref IntPtr pConn, byte[] spnBuffer, byte[] instanceName, bool fOverrideCache, 
-                                    bool fSync, int timeout, bool fParallel, SqlConnectionIPAddressPreference ipPreference, SQLDNSInfo cachedDNSInfo)
+        internal static unsafe uint SNIOpenSyncEx(
+            ConsumerInfo consumerInfo,
+            string constring,
+            ref IntPtr pConn,
+            byte[] spnBuffer,
+            byte[] instanceName,
+            bool fOverrideCache,
+            bool fSync,
+            int timeout,
+            bool fParallel,
+            SqlConnectionIPAddressPreference ipPreference,
+            SQLDNSInfo cachedDNSInfo,
+            bool tlsFirst,
+            string hostNameInCertificate)
         {
+            //TDS 8 TODO: Plumb new options into native SNI call
+
             fixed (byte* pin_instanceName = &instanceName[0])
             {
                 SNI_CLIENT_CONSUMER_INFO clientConsumerInfo = new SNI_CLIENT_CONSUMER_INFO();
