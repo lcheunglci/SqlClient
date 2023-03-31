@@ -12,7 +12,8 @@ namespace Microsoft.Data.SqlClient.ManualTesting.Tests
 {
     public static class SqlCredentialTest
     {
-
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp)]
         [ConditionalFact(typeof(DataTestUtility), nameof(DataTestUtility.AreConnStringsSetup), nameof(DataTestUtility.IsNotAzureServer))]
         public static void CreateSqlConnectionWithCredential()
         {
@@ -120,6 +121,8 @@ namespace Microsoft.Data.SqlClient.ManualTesting.Tests
             }
         }
 
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp)]
         [ConditionalFact(typeof(DataTestUtility), nameof(DataTestUtility.AreConnStringsSetup), nameof(DataTestUtility.IsNotAzureServer))]
         public static void OldCredentialsShouldFail()
         {
